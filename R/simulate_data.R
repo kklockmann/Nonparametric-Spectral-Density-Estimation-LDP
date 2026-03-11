@@ -5,6 +5,8 @@ source("data_simulation_functions.R")
 ######################
 #Before running: Create a folder DATA.
 
+data_dir <- "../DATA/"
+
 # Reproducibility
 seed <- 42
 
@@ -62,7 +64,7 @@ if (ex.nb == "EX4_") {
 
 #file name
 simdata_file <- file.path(sprintf("simdata_n%g_sd%.1f_MC%g_seed%g.RData", n, sd, N_MC, seed))
-simdata_file <- paste0("DATA/", ex.nb, simdata_file)
+simdata_file <- paste0(data_dir, ex.nb, simdata_file)
 
 #save data
 save(data, acf.true, sdf.true, n, sd, N_MC, #gamma

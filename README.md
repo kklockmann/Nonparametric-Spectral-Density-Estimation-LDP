@@ -5,9 +5,9 @@ This repository contains the code for the simulation study in the manuscript:
 
 ## Execution Order
 1. Create folders: `DATA/`, `FIGURES/`, `RESULTS/`
-2. Run `simulate_data.R` to generate data (4 available processes: EX1–EX4)
-3. Run `estimation_plots_acf.R` for covariance estimation plots
-4. Run `estimation_plots_sdf.R` for spectral density plots
+2. Run `R/simulate_data.R` to generate data (4 available processes: EX1–EX4)
+3. Run `R/estimation_plots_acf.R` for covariance estimation plots
+4. Run `R/estimation_plots_sdf.R` for spectral density plots
 
 ## Requirements
 - R (≥ 4.0)

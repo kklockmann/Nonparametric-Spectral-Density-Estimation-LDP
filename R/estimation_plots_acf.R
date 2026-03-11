@@ -5,13 +5,13 @@ source("data_utils.R")
 #Before running 
 #1. simulate data, which are loaded here
 #2. create two folders: FIGURES and RESULTS
-data_dir = "DATA/"
-fig_dir = "FIGURES/"
-res_dir = "RESULTS/"
+data_dir = "../DATA/"
+fig_dir = "../FIGURES/"
+res_dir = "../RESULTS/"
 
 #Configuration
 cfg <- list(
-  experiment = "EX2",
+  experiment = "EX1",
   #switch between "EX1", "EX2", "EX3", "EX4"
   
   #index of covariance coefficient to be estimated
@@ -153,7 +153,8 @@ plot_mse_vs_alpha(
   log_scale_y = TRUE,
   log_scale_x = TRUE,
   theo_rate = "NI",
-  labels = labels_NI
+  labels = labels_NI,
+  ylims = c(-5,30)
 )
 
 #SI-plot: variance

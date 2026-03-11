@@ -5,9 +5,9 @@ source("data_utils.R")
 #Before running 
 #1. simulate data, which are loaded here
 #2. create two folders: FIGURES and RESULTS
-data_dir = "DATA/"
-fig_dir = "FIGURES/"
-res_dir = "RESULTS/"
+data_dir = "../DATA/"
+fig_dir = "../FIGURES/"
+res_dir = "../RESULTS/"
 
 #to speed up the program, use shorter alpha_grid in computations section
 
