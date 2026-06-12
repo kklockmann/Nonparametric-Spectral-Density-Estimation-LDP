@@ -70,7 +70,7 @@ tau_grid = cbind(tau_NI, tau_SI)
 # No privacy (no) baseline
 # -----------------------
 #number of covariance coef.s used for sdf estimation
-K0 <- ceiling((1 / cfg$n)^(-1 / (2 * cfg$s + 1)))
+K0 <- ceiling(3*(1 / cfg$n)^(-1 / (2 * cfg$s + 1)))
 mse_np <- numeric(cfg$N_MC)
 for (i in seq_len(cfg$N_MC)) {
   X <- data[i, ]
@@ -93,8 +93,8 @@ for (a in 1:length(alpha_grid)) {
     tau_si <- tau_grid[t, 2]
     
     #number of covariance coef.s used for sdf estimation
-    K_SI = ceiling(max(1 / cfg$n, tau_si^6 / (cfg$n * alpha^2))^(-1 / (2*cfg$s + 1)))
-    K_NI = ceiling(max(1 / cfg$n, tau^4 / (cfg$n * alpha^4))^(-1 / (2*cfg$s + 1)))
+    K_SI = ceiling(3*max(1 / cfg$n, tau_si^6 / (cfg$n * alpha^2))^(-1 / (2*cfg$s + 1)))
+    K_NI = ceiling(3*max(1 / cfg$n, tau^4 / (cfg$n * alpha^4))^(-1 / (2*cfg$s + 1)))
     
     tau_tilde <- sqrt(1024 * tau_si^6 * (K_SI + 1)) / cfg$division_const_tilde
     
@@ -105,13 +105,20 @@ for (a in 1:length(alpha_grid)) {
       
       # Sequential interactive privatization and estimation
       Z_SI <- priv.data.SI.sdf0(X, cfg$omega, alpha, tau_si, tau_tilde, K_SI)
-      mse_SI[i] <- (sdf0.hat.SI(Z_SI) - sdf_true)^2
+      sdf_SI <- sdf0.hat.SI(Z_SI)
+      if (sdf_SI<0){
+        neg_SI=neg_SI+1
+        sdf_SI <- 0
+      } 
+      mse_SI[i] <- (sdf_SI - sdf_true)^2
       
       # Non-interactive privatization and estimation
       Z_NI <- priv.data.NI(X, alpha, tau)
       sdf_NI <- sdf.hat.global.NI(Z_NI, K_NI, cfg$omega, alpha, tau)
+      if (sdf_NI<0){
+        sdf_NI <- 0
+      } 
       mse_NI[i] <- (sdf_NI - sdf_true)^2
-      
     }
     MSE_SI[a, t] <- mean(mse_SI)
     MSE_NI[a, t] <- mean(mse_NI)
@@ -157,7 +164,7 @@ plot_mse_vs_alpha(
   log_scale_x = TRUE,
   theo_rate = "NI",
   labels = labels_NI,
-  ylims = c(-5,30)
+  ylims = c(-10,30)
 )
 
 #SI-plot
@@ -179,7 +186,7 @@ plot_mse_vs_alpha(
   log_scale_x = TRUE,
   theo_rate = "SI",
   labels = labels_SI,
-  ylims = c(-5,30)
+  ylims = c(-10,30)
 )
 
 #save results
@@ -230,7 +237,7 @@ save(cfg, results.SI, results.NI, file = results_file)
 #   log_scale_x = TRUE,
 #   theo_rate = "SI",
 #   labels = labels_SI,
-#   ylims = c(-5, 30)
+#   ylims = c(-10, 30)
 # )
 # 
 # 

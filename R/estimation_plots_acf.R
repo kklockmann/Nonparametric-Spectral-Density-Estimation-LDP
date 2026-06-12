@@ -15,7 +15,7 @@ cfg <- list(
   #switch between "EX1", "EX2", "EX3", "EX4"
   
   #index of covariance coefficient to be estimated
-  j = 2,  #(0: variance, 1: simga_1, ...)
+  j = 0,  #(0: variance, 1: simga_1, ...)
   
   #data parameters
   n = 1000,
@@ -31,7 +31,10 @@ cfg <- list(
   #to reduce theoretical choice of tau.tilde:
   #theoretical choice: 1;
   #other choices, e.g., 16, 160
-  division_const_tilde = 160
+  division_const_tilde = 160,
+  
+  #default for negative variance estimates
+  eta=0.001 #1/n
 )
 
 ###########################################
@@ -105,11 +108,19 @@ for (a in 1:length(alpha_grid)) {
       
       # Sequential interactive privatization and estimation
       Z_SI <- priv.data.SI.acf(X, cfg$j, alpha, tau_si, tau_tilde)
-      mse_SI[i] <- (sigma.hat.SI(Z_SI) - acf_true)^2
+      s_SI <- sigma.hat.SI(Z_SI)
+      if (cfg$j == 0 && s_SI<0){
+        s_SI<-cfg$eta
+      }
+      mse_SI[i] <- (s_SI - acf_true)^2
       
       # Non-interactive privatization and estimation
       Z_NI <- priv.data.NI(X, alpha, tau)
-      mse_NI[i] <- (sigma.hat.NI(Z_NI, cfg$j, alpha, tau) - acf_true)^2
+      s_NI <- sigma.hat.NI(Z_NI, cfg$j, alpha, tau)
+      if (cfg$j == 0 && s_NI<0){
+        s_NI<-cfg$eta
+      }  
+      mse_NI[i] <- (s_NI - acf_true)^2  
     }
     MSE_SI[a, t] <- mean(mse_SI)
     MSE_NI[a, t] <- mean(mse_NI)
@@ -154,7 +165,7 @@ plot_mse_vs_alpha(
   log_scale_x = TRUE,
   theo_rate = "NI",
   labels = labels_NI,
-  ylims = c(-5,30)
+  ylims = c(-10,30)
 )
 
 #SI-plot: variance
@@ -207,7 +218,7 @@ if (cfg$j != 0) {
     log_scale_x = TRUE,
     theo_rate = "SI",
     labels = labels_SI,
-    ylims = c(-5,30)
+    ylims = c(-10,30)
   )
 }
 
